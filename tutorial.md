@@ -14,7 +14,7 @@
 
 #### U: Update -> update a product / a user info : PUT request
 
-#### D: Delete -> DELETE rquest
+#### D: Delete -> DELETE request
 
 
 
