@@ -3,6 +3,7 @@ package com.diego.diego_ecommerce.controllers;
 import com.diego.diego_ecommerce.dao.ProductDao;
 import com.diego.diego_ecommerce.dto.ResponseDiego;
 import com.diego.diego_ecommerce.models.ProductModel;
+import com.diego.diego_ecommerce.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,34 +13,33 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    private ProductDao productDao;
+    private ProductService productService;
 
-    public ProductController(ProductDao productDao){
-        this.productDao=productDao;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PostMapping("/add")
-    ResponseEntity addProduct(@RequestBody ProductModel productInfo) throws Exception{
+    ResponseEntity createNewProduct(@RequestBody ProductModel productInfo) throws Exception{
+        return ResponseEntity.ok(productService.addProduct(productInfo));
+    }
 
+    @GetMapping()
+    public ResponseEntity getProducts(){
+        return ResponseEntity.ok(productService.getProducts());
+    }
+
+    @GetMapping("/{id}")
+    public  ResponseEntity getOneProduct(@PathVariable Long id ){
         ResponseDiego response = new ResponseDiego();
 
-        if(productDao.findByNameIgnoreCase(productInfo.name).isPresent()){
-            response.message     = "A Product with name "+ productInfo.name + " already exists";
+        ProductModel product = productService.getOneProduct(id);
+
+        if(product == null){
+            response.message = "Product with id "+ id + " does not exist.";
             return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.ok(product);
         }
-
-        if(productInfo.name.isEmpty() ||  productInfo.name == null){
-            response.message = "Price should not be empty";
-            return ResponseEntity.ok(response);
-        }
-
-        if(productInfo.price == null){
-            response.message = "Price should not be empty";
-            return ResponseEntity.ok(response);
-        }
-
-        productDao.save(productInfo);
-
-        return ResponseEntity.ok("Product successfully Added");
     }
 }

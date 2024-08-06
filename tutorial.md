@@ -27,3 +27,7 @@
  - create a ProductController. Inside this controller, create a method called addProduct.
  - use postman to add some products in the database
  - do not forget to commit and push your work in git.
+
+## SALT
+ user1: 12345 -> kjhkuegfgwufgwvuvuhufv
+ user2: 12345 -> 
