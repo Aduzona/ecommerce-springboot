@@ -56,4 +56,44 @@ public class ProductService {
             return null;
         }
     }
+
+    public ResponseDiego updateProduct(Long id, ProductModel newProductEntity){
+        Optional<ProductModel> product = productDao.findById(id);
+
+        if(product.isPresent()){
+            ProductModel productToUpdate = product.get();
+
+            if(productDao.findByNameIgnoreCase(newProductEntity.name).isPresent()){
+                return new ResponseDiego("A Product with name "+ newProductEntity.name + " already exists");
+            }
+
+            if(!newProductEntity.name.isEmpty() &&  newProductEntity.name != null){
+                productToUpdate.name = newProductEntity.name;
+            }
+
+            if(newProductEntity.price != null){
+                productToUpdate.price = newProductEntity.price;
+            }
+
+            if(newProductEntity.description != null){
+                productToUpdate.description = newProductEntity.description;
+            }
+
+            productDao.save(productToUpdate);
+            return  new ResponseDiego("Product successfully updated");
+        }else{
+            return new ResponseDiego("A product with id "+id+" does not exist");
+        }
+    }
+
+    public ResponseDiego deleteProduct(Long id){
+        Optional<ProductModel> product = productDao.findById(id);
+
+        if(product.isPresent()){
+            productDao.delete(product.get());
+            return  new ResponseDiego("Product successfully deleted");
+        }else{
+            return new ResponseDiego("A product with id "+id+" does not exist");
+        }
+    }
 }
